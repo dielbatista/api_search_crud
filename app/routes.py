@@ -5,6 +5,12 @@ from app import crud
 
 router = APIRouter()
 
+
+@router.post("/usuarios")
+def create_usuario(usuario_data: dict, db: Session = Depends(get_db)):
+    return crud.create_usuario(db, usuario_data)    
+
+
 @router.get("/usuarios/{usuario_id}")
 def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
     db_usuario = crud.get_usuario_by_id(db, usuario_id)
