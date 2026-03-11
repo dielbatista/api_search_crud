@@ -46,3 +46,16 @@ def test_delete_usuario_not_found():
     """Testa se deletar um ID inexistente retorna 404"""
     response = client.delete("/usuarios/999999")
     assert response.status_code == 404
+    
+def test_search_usuario():
+    
+    payload = random_user_data()
+    payload["nome"] = "TesteBusca"
+    post_response = client.post("/usuarios", json=payload)
+    assert post_response.status_code == 200
+
+
+    search_response = client.get("/usuarios/busca?nome=Teste")
+    assert search_response.status_code == 200
+    results = search_response.json()
+    assert any(user["nome"] == "TesteBusca" for user in results)
