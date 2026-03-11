@@ -18,6 +18,11 @@ def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Usuario not found")
     return db_usuario
 
+@router.get("/usuarios/busca")
+def search_usuarios(nome: str, db: Session = Depends(get_db)):
+    usuarios = crud.get_usuario_by_nome(db, nome)
+    return usuarios
+
 @router.delete("/usuarios/{usuario_id}")
 def delete_usuario(usuario_id: int, db: Session = Depends(get_db)):
     db_usuario = crud.get_usuario_by_id(db, usuario_id)

@@ -14,6 +14,9 @@ def create_usuario(db: Session, usuario_data: dict):
     db.refresh(novo_usuario)
     return novo_usuario
 
+def get_usuario_by_nome(db: Session, nome: str):
+    return db.query(models.Usuario).filter(models.Usuario.name.ilike(f"%{nome}%")).all()
+
 
 def listar_usuarios(db: Session):
     return db.query(models.Usuario).all()

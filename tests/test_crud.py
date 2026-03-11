@@ -32,8 +32,27 @@ def test_listar_usuarios():
     finally:
         db.close()
         
+def test_get_usuario_by_nome(db_session):
+    
+        random_str = uuid.uuid4().hex[:8]
+        usuario_data = {
+        "name": "Diel Batista",
+        "email": f"diel.{random_str}@example.com", 
+        "login": f"login_{random_str}",             
+        "hash_password": "1245678"
+    }
+        
+        from app.crud import create_usuario, get_usuario_by_nome
+        
+        create_usuario(db_session, usuario_data)
+        resultado = get_usuario_by_nome(db_session, "Batista")
+        
+        assert len(resultado) > 0
+        assert resultado[0].name == "Diel Batista"
+        assert any(usuario.name == "Diel Batista" for usuario in resultado)
+        
 def test_get_usuario_by_id():
-    try:
+    try:    
         db = SessionLocal()
         usuario_data = {
             "name": "Test User",
