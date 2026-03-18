@@ -1,18 +1,38 @@
 from sqlalchemy.orm import Session
-from . import models
+from . import models, security
 
 def create_usuario(db: Session, usuario_data: dict):
+    # CRIPTOGRAFIA: Transformamos a senha pura em Hash antes de salvar
+    senha_hasheada = security.gerar_hash_senha(usuario_data["hash_password"])
+    
     novo_usuario = models.Usuario(
         name=usuario_data["name"],
         email=usuario_data["email"],
         login=usuario_data["login"],
-        hash_password=usuario_data["hash_password"],
-        active=usuario_data.get("active", True) 
+        hash_password=senha_hasheada, # Salvamos o HASH, não a senha pura
+        active=usuario_data.get("active", True)
     )
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
     return novo_usuario
+
+def create_usuario(db: Session, usuario_data: dict):
+    senha_hasheada = security.gerar_hash_senha(usuario_data["hash_password"])
+    
+    novo_usuario = models.Usuario(
+        name=usuario_data["name"],
+        email=usuario_data["email"],
+        login=usuario_data["login"],
+        hash_password=senha_hasheada, # Salva a versão segura
+        active=usuario_data.get("active", True),
+        is_admin=usuario_data.get("is_admin", False)
+    )
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+    return novo_usuario
+
 
 def get_usuario_by_nome(db: Session, nome: str):
     return db.query(models.Usuario).filter(models.Usuario.name.ilike(f"%{nome}%")).all()
@@ -35,3 +55,5 @@ def delete_usuario(db: Session, usuario_id: int):
         db.commit()
         return True
     return False
+
+

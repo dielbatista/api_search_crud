@@ -1,28 +1,27 @@
 from app.crud import create_usuario, get_usuario_by_id, delete_usuario
 from app.database import SessionLocal
 from app.models import Usuario
+from app import crud, security
 import uuid
 
 def gerar_email_unico():
     return f"test_{uuid.uuid4().hex[:8]}@example.com"
 
-def test_create_usuario():
-    try:
-        db = SessionLocal()
-        usuario_data = {
-            "name": "Test User",
-            "email": gerar_email_unico(),
-            "login": f"login_{uuid.uuid4().hex[:8]}",
-            "hash_password": "hashed_password"
-        }
-        usuario = create_usuario(db, usuario_data)
-        
-        assert usuario.id is not None
-        assert usuario.name == "Test User"
-        assert usuario.email == usuario_data["email"]
-        assert usuario.login == usuario_data["login"]
-        assert usuario.hash_password == "hashed_password"
-    finally:        db.close()
+def test_create_usuario(db_session):
+    senha_plana = "minha_senha_123"
+    usuario_data = {
+        "name": "Diel Batista",
+        "email": "diel@exemplo.com",
+        "login": "diel_dev",
+        "hash_password": senha_plana
+    }
+
+    usuario = crud.create_usuario(db_session, usuario_data)
+    
+    assert usuario.id is not None
+    assert usuario.hash_password != senha_plana
+    
+    assert security.verificar_senha(senha_plana, usuario.hash_password) is True
     
 def test_listar_usuarios():
     try:
