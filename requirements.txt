@@ -2,3 +2,8 @@ fastapi
 uvicorn
 sqlalchemy
 psycopg2-binary
+passlib[bcrypt]
+python-multipart
+# --- Novas adições para amanhã ---
+python-jose[cryptography]  # Para gerar e validar Tokens JWT
+python-dotenv              # Para gerenciar as variáveis de ambiente com segurança

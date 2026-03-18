@@ -13,7 +13,7 @@ def create_initial_admin():
             "is_admin": True
         }
 
-        user_exists = db.query(models.Usuario).filter(models.usuario.login == admin_data["login"]).first()
+        user_exists = db.query(models.Usuario).filter(models.Usuario.login == admin_data["login"]).first()
         
         if not user_exists:
             print(f"[SEED] Criando admin: {admin_data['login']}...")
